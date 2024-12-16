@@ -5,7 +5,7 @@ import { GETEVENTS, GETMYEVENTS, GETONEEVENT } from '../ActionTypes/EventTypes'
 export const getevents =(req,res)=>async(dispatch)=>{
 
     try {
-        const res = await axios.get('/api/events/getAllEvents')
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/events/getAllEvents`)
 
         dispatch(
             {
