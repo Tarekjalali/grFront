@@ -7,46 +7,53 @@ import { Link } from 'react-router-dom';
 const Events = () => {
   const dispatch = useDispatch();
 
-  const user = useSelector(state => state.AuthReducer.user);
+  const user = useSelector((state) => state.AuthReducer.user);
   const token = localStorage.getItem('token');
-  
+
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [search, setSearch] = useState('');
+  const [filteredEvents, setFilteredEvents] = useState([]);
+
+  const events = useSelector((state) => state.eventsReducer.events);
+
   useEffect(() => {
     dispatch(getevents());
   }, [dispatch]);
 
-  const events = useSelector(state => state.eventsReducer.events);
+  // Update filteredEvents when events change
+  useEffect(() => {
+    if (events.length > 0) {
+      setFilteredEvents(events);
+      setLoading(false); // Set loading to false once data is fetched
+    }
+  }, [events]);
 
-  // State to store search query and filtered events
-  const [search, setSearch] = useState('');
-  const [filteredEvents, setFilteredEvents] = useState(events);
-
-  // Handle search button click
   const handleSearch = (e) => {
     e.preventDefault(); // Prevent form submission
-
-    // If the search input is not empty, filter events
     if (search.length > 0) {
       const filtered = events.filter((event) =>
         event.Game.toLowerCase().includes(search.toLowerCase())
       );
       setFilteredEvents(filtered);
     } else {
-      // If the search input is empty, reset to original events
-      setFilteredEvents(events);
+      setFilteredEvents(events); // Reset to original events if search is cleared
     }
   };
 
-  // Handle input field change
   const handleInputChange = (e) => {
     setSearch(e.target.value); // Update the search state
   };
 
-  // Effect to reset filtered events whenever search is cleared
+  // Reset filteredEvents whenever search is cleared
   useEffect(() => {
     if (search === '') {
       setFilteredEvents(events); // Reset to original events when search is cleared
     }
-  }, [search, events]); // Trigger effect when search or events change
+  }, [search, events]);
+
+  if (loading) {
+    return <h1>Loading events...</h1>; // Show loading message while events are being fetched
+  }
 
   return (
     <div>
