@@ -1,67 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getevents } from '../Redux/Actions/EventsActions';
-import CardEvent from './CardEvent';
-import { Link } from 'react-router-dom';
-
 const Events = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
-  const user = useSelector((state) => state.AuthReducer.user);
+  const user = useSelector(state => state.AuthReducer.user);
   const token = localStorage.getItem('token');
 
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [search, setSearch] = useState('');
-  const [filteredEvents, setFilteredEvents] = useState([]);
-
-  const events = useSelector((state) => state.eventsReducer.events);
-
   useEffect(() => {
-    dispatch(getevents());
+    dispatch(getevents()).finally(() => setLoading(false)); // Set loading to false when fetching is done
   }, [dispatch]);
 
-  // Update filteredEvents when events change
-  useEffect(() => {
-    if (events.length > 0) {
-      setFilteredEvents(events);
-      setLoading(false); // Set loading to false once data is fetched
-    }
-  }, [events]);
+  const events = useSelector(state => state.eventsReducer.events);
+  const [search, setSearch] = useState('');
+  const [filteredEvents, setFilteredEvents] = useState(events);
 
-  const handleSearch = (e) => {
-    e.preventDefault(); // Prevent form submission
-    if (search.length > 0) {
-      const filtered = events.filter((event) =>
-        event.Game.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredEvents(filtered);
-    } else {
-      setFilteredEvents(events); // Reset to original events if search is cleared
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setSearch(e.target.value); // Update the search state
-  };
-
-  // Reset filteredEvents whenever search is cleared
   useEffect(() => {
     if (search === '') {
-      setFilteredEvents(events); // Reset to original events when search is cleared
+      setFilteredEvents(events);
     }
   }, [search, events]);
 
+  // Show a loading spinner or message while the events are being fetched
   if (loading) {
-    return <h1>Loading events...</h1>; // Show loading message while events are being fetched
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
         <form className="flex items-center max-w-lg mx-auto" onSubmit={handleSearch}>
-          <label htmlFor="voice-search" className="sr-only">
-            Search
-          </label>
+          <label htmlFor="voice-search" className="sr-only">Search</label>
           <div className="relative w-full">
             <input
               type="text"
@@ -73,36 +40,9 @@ const Events = () => {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center py-2.5 px-3 ms-2 text-sm font-medium text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            <svg
-              className="w-4 h-4 me-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
+          <button type="submit" className="inline-flex items-center py-2.5 px-3 ms-2 text-sm font-medium text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Search
           </button>
-          <Link to="/AddEvent">
-            <button
-              type="submit"
-              className="inline-flex items-center py-2.5 px-3 ms-2 text-sm font-medium text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              style={{ width: '115px' }}
-            >
-              Create Event
-            </button>
-          </Link>
         </form>
       </div>
 
@@ -116,5 +56,3 @@ const Events = () => {
     </div>
   );
 };
-
-export default Events;
