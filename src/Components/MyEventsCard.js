@@ -8,16 +8,19 @@ const MyEventsCard = ({ el, userId }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   const handleDelete = () => {
     dispatch(deleteEvent(el._id, location, navigate, userId));
     setIsModalOpen(false); // Close the modal after deleting
   };
 
+  
+
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
-      style={{ width: '295px', height: '340px' }} // Card dimensions
+      className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      style={{ width: '295px', height: '380px' }} // Card dimensions
     >
       <div className="relative">
         <Link to={`/EventPage/${el._id}`}>
@@ -30,8 +33,11 @@ const MyEventsCard = ({ el, userId }) => {
         </Link>
       </div>
       <div
-        className="p-3 flex flex-col justify-between"
-        style={{ width: '295px', height: '170px' }} // Content area dimensions
+        className="p-3 pr-2 flex flex-col justify-between"
+        style={{
+          width: '295px', height: '240px', // Text area height
+          overflow: 'hidden', wordWrap: 'break-word', // Fix word wrapping issue
+        }} // Content area dimensions
       >
         <div>
           <Link to={`/EventPage/${el._id}`}>
@@ -39,10 +45,29 @@ const MyEventsCard = ({ el, userId }) => {
               {el.Game}
             </h5>
           </Link>
-          <p className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400">{el.Location}</p>
-          <p className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400">{el.Description}</p>
+          <p style={{fontWeight :'bold'}} className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400">{el.Location}</p>
+          <p
+            className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400"
+            style={{
+              wordBreak: 'break-word', // Breaks the word if it reaches the edge
+              whiteSpace: 'normal', // Ensures it wraps to the next line
+            }}
+          >
+            {showFullDescription ? el.Description : `${el.Description.slice(0, 70)}...`}
+          </p>
+          <div className="mt-2">
+            {!showFullDescription && (
+              <Link 
+              to={`/EventPage/${el._id}`} 
+              className="text-blue-500 hover:underline text-sm"
+            >
+              Show More
+            </Link>
+            ) }
+          </div>
         </div>
-        <div className="flex space-x-2 mt-2">
+        {/* This div holds the 3 buttons and gets the margin-bottom auto */}
+        <div className="flex space-x-2 mt-2 flex-wrap mb-auto">
           <button
             onClick={() => navigate(`/ParticipantList/${el._id}`)}
             className="px-3 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
