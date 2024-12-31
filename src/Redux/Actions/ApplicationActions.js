@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { GETALLAPPLICATIONS, GETMYAPPLICATIONS, GETPARTICIPANTSLIST } from '../ActionTypes/ApplicationTypes';
-import {handleError} from './ErrorsActions'
+import { handleError } from './ErrorsActions';
+
 
 // Base URL of the backend
 const API_BASE_URL = 'https://grback.onrender.com';
