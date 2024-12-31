@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getevents } from '../Redux/Actions/EventsActions';
 import CardEvent from './CardEvent';
 import LoadingSpinner from './LoadingSpinner'; // Import the LoadingSpinner component
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 const Events = () => {
   const dispatch = useDispatch();
@@ -11,6 +11,8 @@ const Events = () => {
 
   const user = useSelector((state) => state.AuthReducer.user);
   const token = localStorage.getItem('token');
+
+  const errors = useSelector(state=>state.ErrorsReducer)
 
   useEffect(() => {
     dispatch(getevents());
@@ -69,6 +71,13 @@ const Events = () => {
 
   return (
     <div>
+      
+
+      <div>
+        {
+          errors.length >0 && <>{errors.map((el,i,t)=>alert(el.msg))}</>
+        }
+      </div>
       <div style={{ marginBottom: '20px', marginTop: '20px' }}>
         <form className="flex items-center max-w-lg mx-auto" onSubmit={handleSearch}>
           <label htmlFor="voice-search" className="sr-only">
