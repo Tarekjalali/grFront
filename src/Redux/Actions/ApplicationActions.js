@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { GETALLAPPLICATIONS, GETMYAPPLICATIONS, GETPARTICIPANTSLIST } from '../ActionTypes/ApplicationTypes';
+import {handleError} from './ErrorsActions'
 
 // Base URL of the backend
 const API_BASE_URL = 'https://grback.onrender.com';
@@ -35,7 +36,9 @@ export const applyToEvent = (application) => async (dispatch) => {
         await axios.post(`${API_BASE_URL}/api/applications/applyToEvent`, application);
         dispatch(getAllApplications());
     } catch (error) {
-        console.log(error);
+        error.response.data.errors.forEach((element) => {
+            dispatch(handleError(element.msg));
+          });
     }
 };
 
