@@ -5,10 +5,17 @@ import { cancelApplication, getMyApplications } from '../Redux/Actions/Applicati
 
 const MyApplicationsCard = ({ el }) => {
   const dispatch = useDispatch();
+  const charLimit = 60; // Character limit for the description
 
   useEffect(() => {
     dispatch(getMyApplications(el.participant._id));
   }, [dispatch, el.participant._id]);
+
+  // Truncated description logic
+  const isLongText = el?.event?.Description?.length > charLimit;
+  const truncatedDescription = isLongText
+    ? el?.event?.Description.slice(0, charLimit) + '...'
+    : el?.event?.Description;
 
   return (
     <div
@@ -39,8 +46,16 @@ const MyApplicationsCard = ({ el }) => {
             {el?.event?.Location}
           </p>
           <p className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400">
-            {el?.event?.Description}
+            {truncatedDescription}
           </p>
+          {isLongText && (
+            <Link
+              to={`/EventPage/${el?.event?._id}`}
+              className="text-blue-500 hover:underline text-sm font-medium"
+            >
+              Show More
+            </Link>
+          )}
           <p className="mb-1 text-sm font-normal text-gray-700 dark:text-gray-400">
             Status: {el.status}
           </p>
