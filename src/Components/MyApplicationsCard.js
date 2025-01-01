@@ -20,7 +20,7 @@ const MyApplicationsCard = ({ el }) => {
   return (
     <div
       className="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
-      style={{ width: '295px', height: '340px' }} // Card dimensions
+      style={{ width: '295px', height: '380px' }} // Card dimensions
     >
       <div className="relative">
         <Link to={`/EventPage/${el?.event?._id}`}>
