@@ -8,7 +8,7 @@ const NavProject = () => {
   const token = localStorage.getItem('token');
   const user = useSelector((state) => state.AuthReducer.user);
   const dispatch = useDispatch();
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <ProSidebarProvider >
